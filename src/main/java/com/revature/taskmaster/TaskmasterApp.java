@@ -1,25 +1,24 @@
 package com.revature.taskmaster;
 
+import com.revature.taskmaster.common.datasource.ConnectionFactory;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class TaskmasterApp {
 
     public static void main(String[] args) {
-        String dbUrl = "jdbc:postgresql://fake-db-url:5432/postgres?currentSchema=taskmaster";
-        String dbUsername = "fake-user";
-        String dbPassword = "fake-password";
-        try {
-            Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+        ConnectionFactory connFactory = ConnectionFactory.getInstance();
+
+        // try-with-resources (introduced in Java 7); only works with things that implement AutoCloseable
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
             if (conn != null) {
                 System.out.println("Connection successful!");
             }
-        } catch (ClassNotFoundException e) {
-            System.err.println("Could not find PostgreSQL JDBC driver. Connection attempt aborted.");
         } catch (SQLException e) {
-            System.err.println("Could not establish a connection to the database.");
+            throw new RuntimeException(e);
         }
+
+
     }
 }
