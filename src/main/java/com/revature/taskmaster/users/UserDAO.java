@@ -66,7 +66,6 @@ public class UserDAO {
             rs.next();
             user.setId(rs.getString("id"));
 
-
         } catch (SQLException e) {
             System.err.println("Something went wrong when communicating with the database");
             e.printStackTrace();
