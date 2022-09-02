@@ -4,4 +4,5 @@ target/
 *.class
 *.jar
 
+logs/
 application.properties
