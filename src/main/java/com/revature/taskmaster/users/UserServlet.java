@@ -25,4 +25,9 @@ public class UserServlet extends HttpServlet {
         resp.getWriter().write(jsonMapper.writeValueAsString(allUsers));
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // TODO implement registration logic
+        resp.getWriter().write("POST to /users works");
+    }
 }
