@@ -1,10 +1,6 @@
 package com.revature.taskmaster.common.util;
 
-import com.revature.taskmaster.common.screens.Screen;
-import com.revature.taskmaster.common.screens.WelcomeScreen;
-
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class AppContext {
@@ -20,9 +16,9 @@ public class AppContext {
     public void startApp() {
         while (appRunning) {
             try {
-                Screen currentScreen = new WelcomeScreen(consoleReader);
-                currentScreen.render();
-            } catch (IOException e) {
+                System.out.println("The app is started, but will close immediately.");
+                appRunning = false;
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
