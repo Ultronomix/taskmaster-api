@@ -2,7 +2,12 @@ package com.revature.taskmaster.users;
 
 import com.revature.taskmaster.common.datasource.ConnectionFactory;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -67,11 +72,24 @@ public class UserDAO {
             user.setId(rs.getString("id"));
 
         } catch (SQLException e) {
-            System.err.println("Something went wrong when communicating with the database");
-            e.printStackTrace();
+           log("ERROR", e.getMessage());
         }
+
+        log("INFO", "Successfully persisted new used with id: " + user.getId());
 
         return user.getId();
 
+    }
+
+    public void log(String level, String message) {
+        try {
+            File logFile = new File("logs/app.log");
+            logFile.createNewFile();
+            BufferedWriter logWriter = new BufferedWriter(new FileWriter(logFile));
+            logWriter.write(String.format("[%s] at %s logged: [%s] %s\n", Thread.currentThread().getName(), LocalDate.now(), level.toUpperCase(), message));
+            logWriter.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
