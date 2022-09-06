@@ -1,5 +1,6 @@
 package com.revature.taskmaster;
 
+import com.revature.taskmaster.auth.AuthService;
 import com.revature.taskmaster.auth.AuthServlet;
 import com.revature.taskmaster.users.UserDAO;
 import com.revature.taskmaster.users.UserServlet;
@@ -19,8 +20,9 @@ public class TaskmasterApp {
 
         // App component instantiation
         UserDAO userDAO = new UserDAO();
+        AuthService authService = new AuthService(userDAO);
         UserServlet userServlet = new UserServlet(userDAO);
-        AuthServlet authServlet = new AuthServlet(userDAO);
+        AuthServlet authServlet = new AuthServlet(authService);
 
         // Web server context and servlet configurations
         final String rootContext = "/taskmaster";

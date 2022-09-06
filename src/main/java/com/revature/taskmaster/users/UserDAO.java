@@ -1,6 +1,7 @@
 package com.revature.taskmaster.users;
 
 import com.revature.taskmaster.common.datasource.ConnectionFactory;
+import com.revature.taskmaster.common.exceptions.DataSourceException;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -56,11 +57,9 @@ public class UserDAO {
             return mapResultSet(rs).stream().findFirst();
 
         } catch (SQLException e) {
-            System.err.println("Something went wrong when communicating with the database");
-            e.printStackTrace();
+            // TODO log this exception
+            throw new DataSourceException(e);
         }
-
-        return Optional.empty();
 
     }
 

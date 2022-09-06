@@ -1,5 +1,6 @@
 package com.revature.taskmaster.auth;
 
+// This is an example of a request DTO
 public class Credentials {
 
     private String username;
