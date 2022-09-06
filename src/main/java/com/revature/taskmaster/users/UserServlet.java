@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserServlet extends HttpServlet {
 
-    private final UserDAO userDAO;
+    private final UserDAO userDAO; // TODO replace with UserService
 
     public UserServlet(UserDAO userDAO) {
         this.userDAO = userDAO;
