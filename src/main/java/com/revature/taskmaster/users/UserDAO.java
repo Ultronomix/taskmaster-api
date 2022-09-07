@@ -43,6 +43,71 @@ public class UserDAO {
 
     }
 
+    public Optional<User> findUserById(UUID id) {
+
+        String sql = baseSelect + "WHERE au.id = ?";
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            // JDBC Statement objects are vulnerable to SQL injection
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataSourceException(e);
+        }
+
+    }
+
+    public Optional<User> findUserByUsername(String username) {
+
+        String sql = baseSelect + "WHERE au.username = ?";
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            // JDBC Statement objects are vulnerable to SQL injection
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+
+        } catch (SQLException e) {
+            // TODO log this exception
+            throw new DataSourceException(e);
+        }
+
+    }
+
+    public boolean isUsernameTaken(String username) {
+        return findUserByUsername(username).isPresent();
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+
+        String sql = baseSelect + "WHERE au.email = ?";
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            // JDBC Statement objects are vulnerable to SQL injection
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            return mapResultSet(rs).stream().findFirst();
+
+        } catch (SQLException e) {
+            // TODO log this exception
+            throw new DataSourceException(e);
+        }
+
+    }
+
+    public boolean isEmailTaken(String email) {
+        return findUserByEmail(email).isPresent();
+    }
+
     public Optional<User> findUserByUsernameAndPassword(String username, String password) {
 
         String sql = baseSelect + "WHERE au.username = ? AND au.password = ?";
