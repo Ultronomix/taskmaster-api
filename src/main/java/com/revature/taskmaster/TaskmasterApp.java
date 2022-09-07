@@ -3,6 +3,7 @@ package com.revature.taskmaster;
 import com.revature.taskmaster.auth.AuthService;
 import com.revature.taskmaster.auth.AuthServlet;
 import com.revature.taskmaster.users.UserDAO;
+import com.revature.taskmaster.users.UserService;
 import com.revature.taskmaster.users.UserServlet;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -21,7 +22,8 @@ public class TaskmasterApp {
         // App component instantiation
         UserDAO userDAO = new UserDAO();
         AuthService authService = new AuthService(userDAO);
-        UserServlet userServlet = new UserServlet(userDAO);
+        UserService userService = new UserService(userDAO);
+        UserServlet userServlet = new UserServlet(userService);
         AuthServlet authServlet = new AuthServlet(authService);
 
         // Web server context and servlet configurations
