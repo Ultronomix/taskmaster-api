@@ -1,7 +1,9 @@
 package com.revature.taskmaster.users;
 
+import java.io.Serializable;
+
 // Example of a response DTO
-public class UserResponse {
+public class UserResponse implements Serializable {
 
     private String id;
     private String givenName;

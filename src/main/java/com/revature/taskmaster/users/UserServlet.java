@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -28,12 +29,44 @@ public class UserServlet extends HttpServlet {
         ObjectMapper jsonMapper = new ObjectMapper();
         resp.setContentType("application/json");
 
+        HttpSession userSession = req.getSession(false);
+
+        // If userSession is null, this means that the requester is not authenticated with the server
+        if (userSession == null) {
+
+            // TODO encapsulate error response creation into its own utility method
+            resp.setStatus(401);
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("statusCode", 401);
+            errorResponse.put("message", "Requester is not authenticated with the system, please log in.");
+            errorResponse.put("timestamp", System.currentTimeMillis()); // TODO replace with LocalDateTime.now()
+            resp.getWriter().write(jsonMapper.writeValueAsString(errorResponse));
+            return;
+
+        }
+
         String idToSearchFor = req.getParameter("id");
+
+        UserResponse requester = (UserResponse) userSession.getAttribute("authUser");
+
+        if (!requester.getRole().equals("DIRECTOR") && !requester.getId().equals(idToSearchFor)) {
+
+            // TODO encapsulate error response creation into its own utility method
+            resp.setStatus(403); // FORBIDDEN; the system recognizes the user, but they do not have permission to be here
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("statusCode", 403);
+            errorResponse.put("message", "Requester is not permitted to communicate with this endpoint.");
+            errorResponse.put("timestamp", System.currentTimeMillis()); // TODO replace with LocalDateTime.now()
+            resp.getWriter().write(jsonMapper.writeValueAsString(errorResponse));
+            return;
+
+        }
 
         try {
 
             if (idToSearchFor == null) {
                 List<UserResponse> allUsers = userService.getAllUsers();
+                resp.addHeader("X-My-Custom-Header", "some-random-value");
                 resp.getWriter().write(jsonMapper.writeValueAsString(allUsers));
             } else {
                 UserResponse foundUser = userService.getUserById(idToSearchFor);
