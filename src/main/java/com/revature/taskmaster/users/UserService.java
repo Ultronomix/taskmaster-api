@@ -18,20 +18,10 @@ public class UserService {
     }
 
     public List<UserResponse> getAllUsers() {
-        // Imperative (more explicit about what is being done)
-//        List<UserResponse> result = new ArrayList<>();
-//        List<User> users = userDAO.getAllUsers();
-//        for (User user : users) {
-//            result.add(new UserResponse(user));
-//        }
-//        return result;
-
-        // Functional approach (more declarative)
         return userDAO.getAllUsers()
                       .stream()
                       .map(UserResponse::new)
                       .collect(Collectors.toList());
-
     }
 
     public UserResponse getUserById(String id) {

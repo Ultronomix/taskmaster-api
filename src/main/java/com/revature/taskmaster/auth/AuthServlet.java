@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AuthServlet extends HttpServlet {
 
@@ -65,4 +63,10 @@ public class AuthServlet extends HttpServlet {
         }
 
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getSession().invalidate(); // this effectively "logs out" the requester by invalidating the session within the server
+    }
+
 }
