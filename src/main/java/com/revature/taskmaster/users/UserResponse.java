@@ -1,6 +1,7 @@
 package com.revature.taskmaster.users;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 // Example of a response DTO
 public class UserResponse implements Serializable {
@@ -67,6 +68,19 @@ public class UserResponse implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserResponse that = (UserResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(givenName, that.givenName) && Objects.equals(surname, that.surname) && Objects.equals(email, that.email) && Objects.equals(username, that.username) && Objects.equals(role, that.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, givenName, surname, email, username, role);
     }
 
     @Override
