@@ -7,7 +7,6 @@ import com.revature.taskmaster.users.User;
 import com.revature.taskmaster.users.UserDAO;
 import com.revature.taskmaster.users.UserResponse;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

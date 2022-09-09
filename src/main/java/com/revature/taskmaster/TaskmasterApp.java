@@ -7,10 +7,17 @@ import com.revature.taskmaster.users.UserService;
 import com.revature.taskmaster.users.UserServlet;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TaskmasterApp {
 
+    private static Logger logger = LogManager.getLogger(TaskmasterApp.class);
+
     public static void main(String[] args) throws LifecycleException {
+
+        logger.info("Starting Taskmaster application");
+
         String docBase = System.getProperty("java.io.tmpdir");
         Tomcat webServer = new Tomcat();
 
@@ -34,6 +41,7 @@ public class TaskmasterApp {
 
         // Starting and awaiting web requests
         webServer.start();
+        logger.info("Taskmaster web application successfully started");
         webServer.getServer().await();
 
     }
