@@ -2,7 +2,6 @@ package com.revature.taskmaster.auth;
 
 import com.revature.taskmaster.common.exceptions.AuthenticationException;
 import com.revature.taskmaster.common.exceptions.InvalidRequestException;
-import com.revature.taskmaster.users.User;
 import com.revature.taskmaster.users.UserDAO;
 import com.revature.taskmaster.users.UserResponse;
 

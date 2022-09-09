@@ -1,5 +1,6 @@
 package com.revature.taskmaster.auth;
 
+import com.revature.taskmaster.common.exceptions.AuthenticationException;
 import com.revature.taskmaster.common.exceptions.InvalidRequestException;
 import com.revature.taskmaster.users.Role;
 import com.revature.taskmaster.users.User;
@@ -53,7 +54,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void test_authenticate_throwsInvalidRequestException_givenInvalidCredentials() {
+    public void test_authenticate_throwsInvalidRequestException_givenTooShortOfPassword() {
 
         // Arrange
         Credentials credentialsStub = new Credentials("invalid", "creds");
@@ -69,8 +70,52 @@ public class AuthServiceTest {
     }
 
     @Test
+    public void test_authenticate_throwsInvalidRequestException_givenTooShortOfUsername() {
+
+        // Arrange
+        Credentials credentialsStub = new Credentials("x", "p4$$2W0RD");
+
+        // Act & Assert
+        assertThrows(InvalidRequestException.class, () -> {
+            sut.authenticate(credentialsStub);
+        });
+
+        verify(mockUserDAO, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
+
+
+    }
+
+    @Test
+    public void test_authenticate_throwsInvalidRequestException_givenNullCredentials() {
+
+        // Arrange
+        Credentials credentialsStub = null;
+
+        // Act & Assert
+        assertThrows(InvalidRequestException.class, () -> {
+            sut.authenticate(credentialsStub);
+        });
+
+        verify(mockUserDAO, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
+
+
+    }
+
+    @Test
     public void test_authenticate_throwsAuthenticationException_givenValidUnknownCredentials() {
-        // TODO implement this test
+
+        // Arrange
+        Credentials credentialsStub = new Credentials("unknown", "credentials");
+        when(mockUserDAO.findUserByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.empty());
+
+        // Act
+        assertThrows(AuthenticationException.class, () -> {
+            sut.authenticate(credentialsStub);
+        });
+
+        // Assert
+        verify(mockUserDAO, times(1)).findUserByUsernameAndPassword(anyString(), anyString());
+
     }
 
 
