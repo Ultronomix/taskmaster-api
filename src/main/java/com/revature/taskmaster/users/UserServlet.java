@@ -14,6 +14,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+import static com.revature.taskmaster.common.SecurityUtils.isDirector;
+import static com.revature.taskmaster.common.SecurityUtils.requesterOwned;
+
 public class UserServlet extends HttpServlet {
 
     private final UserService userService;
@@ -42,7 +45,7 @@ public class UserServlet extends HttpServlet {
 
         UserResponse requester = (UserResponse) userSession.getAttribute("authUser");
 
-        if (!requester.getRole().equals("DIRECTOR") && !requester.getId().equals(idToSearchFor)) {
+        if (!isDirector(requester) && !requesterOwned(requester, idToSearchFor)) {
             resp.setStatus(403); // FORBIDDEN; the system recognizes the user, but they do not have permission to be here
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(403, "Requester is not permitted to communicate with this endpoint.")));
             return;

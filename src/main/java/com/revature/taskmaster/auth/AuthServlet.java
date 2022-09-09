@@ -6,7 +6,6 @@ import com.revature.taskmaster.common.ErrorResponse;
 import com.revature.taskmaster.common.exceptions.AuthenticationException;
 import com.revature.taskmaster.common.exceptions.DataSourceException;
 import com.revature.taskmaster.common.exceptions.InvalidRequestException;
-import com.revature.taskmaster.users.User;
 import com.revature.taskmaster.users.UserResponse;
 
 import javax.servlet.ServletException;
@@ -45,21 +44,14 @@ public class AuthServlet extends HttpServlet {
             resp.getWriter().write(jsonMapper.writeValueAsString(responseBody));
 
         } catch (InvalidRequestException | JsonMappingException e) {
-
-            // TODO encapsulate error response creation into its own utility method
             resp.setStatus(400); // BAD REQUEST
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(400, e.getMessage())));
-
         } catch (AuthenticationException e) {
-
             resp.setStatus(401); // UNAUTHORIZED; typically sent back when login fails or if a protected endpoint is hit by an unauthenticated user
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(401, e.getMessage())));
-
         } catch (DataSourceException e) {
-
             resp.setStatus(500); // INTERNAL SERVER ERROR; general error indicating a problem with the server
             resp.getWriter().write(jsonMapper.writeValueAsString(new ErrorResponse(500, e.getMessage())));
-
         }
 
     }
