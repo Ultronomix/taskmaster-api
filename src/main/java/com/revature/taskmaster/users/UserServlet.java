@@ -20,15 +20,16 @@ import static com.revature.taskmaster.common.SecurityUtils.requesterOwned;
 public class UserServlet extends HttpServlet {
 
     private final UserService userService;
+    private final ObjectMapper jsonMapper;
 
     // TODO inject a shared reference to a configured ObjectMapper
-    public UserServlet(UserService userService) {
+    public UserServlet(UserService userService, ObjectMapper jsonMapper) {
         this.userService = userService;
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ObjectMapper jsonMapper = new ObjectMapper();
         resp.setContentType("application/json");
 
         // Access the HTTP session on the request (if it exists; otherwise it will be null)
@@ -85,7 +86,6 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ObjectMapper jsonMapper = new ObjectMapper();
         resp.setContentType("application/json");
 
         try {

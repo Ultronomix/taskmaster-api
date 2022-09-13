@@ -1,5 +1,6 @@
 package com.revature.taskmaster;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.taskmaster.auth.AuthService;
 import com.revature.taskmaster.auth.AuthServlet;
 import com.revature.taskmaster.users.UserDAO;
@@ -30,8 +31,9 @@ public class TaskmasterApp {
         UserDAO userDAO = new UserDAO();
         AuthService authService = new AuthService(userDAO);
         UserService userService = new UserService(userDAO);
-        UserServlet userServlet = new UserServlet(userService);
-        AuthServlet authServlet = new AuthServlet(authService);
+        ObjectMapper jsonMapper = new ObjectMapper();
+        UserServlet userServlet = new UserServlet(userService, jsonMapper);
+        AuthServlet authServlet = new AuthServlet(authService, jsonMapper);
 
         // Web server context and servlet configurations
         final String rootContext = "/taskmaster";

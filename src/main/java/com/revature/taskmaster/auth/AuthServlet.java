@@ -23,9 +23,11 @@ public class AuthServlet extends HttpServlet {
     private static Logger logger = LogManager.getLogger(AuthServlet.class);
 
     private final AuthService authService;
+    private final ObjectMapper jsonMapper;
 
-    public AuthServlet(AuthService authService) {
+    public AuthServlet(AuthService authService, ObjectMapper jsonMapper) {
         this.authService = authService;
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
@@ -33,7 +35,6 @@ public class AuthServlet extends HttpServlet {
 
         logger.info("A POST request was received by /taskmaster/auth at {}", LocalDateTime.now());
 
-        ObjectMapper jsonMapper = new ObjectMapper();
         resp.setContentType("application/json");
 
 
