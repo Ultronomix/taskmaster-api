@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto8
+  pre_build:
+    commands:
+      - aws s3 cp s3://taskmaster-resources/application.properties ./src/main/resources
+  build:
+    commands:
+      - mvn clean package
+  post_build:
+    commands:
+      - mv target/*-jar-with-dependencies.jar ./taskmaster.jar
+
+artifacts:
+  files:
+    - taskmaster.jar
