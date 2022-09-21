@@ -21,15 +21,15 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Controller
-public class AuthServlet extends HttpServlet {
+public class AuthController extends HttpServlet {
 
-    private static Logger logger = LogManager.getLogger(AuthServlet.class);
+    private static Logger logger = LogManager.getLogger(AuthController.class);
 
     private final AuthService authService;
     private final ObjectMapper jsonMapper;
 
     @Autowired
-    public AuthServlet(AuthService authService, ObjectMapper jsonMapper) {
+    public AuthController(AuthService authService, ObjectMapper jsonMapper) {
         this.authService = authService;
         this.jsonMapper = jsonMapper;
     }

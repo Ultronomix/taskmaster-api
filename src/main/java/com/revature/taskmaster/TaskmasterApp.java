@@ -1,11 +1,7 @@
 package com.revature.taskmaster;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.taskmaster.auth.AuthService;
-import com.revature.taskmaster.auth.AuthServlet;
+import com.revature.taskmaster.auth.AuthController;
 import com.revature.taskmaster.config.AppConfig;
-import com.revature.taskmaster.users.UserDAO;
-import com.revature.taskmaster.users.UserService;
 import com.revature.taskmaster.users.UserServlet;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -32,13 +28,13 @@ public class TaskmasterApp {
             webServer.getConnector(); // formality, required in order for the server to receive requests
 
             UserServlet userServlet = beanContainer.getBean(UserServlet.class);
-            AuthServlet authServlet = beanContainer.getBean(AuthServlet.class);
+            AuthController authController = beanContainer.getBean(AuthController.class);
 
             // Web server context and servlet configurations
             final String rootContext = "/taskmaster";
             webServer.addContext(rootContext, docBase);
             webServer.addServlet(rootContext, "UserServlet", userServlet).addMapping("/users");
-            webServer.addServlet(rootContext, "AuthServlet", authServlet).addMapping("/auth");
+            webServer.addServlet(rootContext, "AuthServlet", authController).addMapping("/auth");
 
             // Starting and awaiting web requests
             webServer.start();
