@@ -1,46 +1,41 @@
 package com.revature.taskmaster.common.datasource;
 
+import com.revature.taskmaster.common.exceptions.DataSourceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.Properties;
 
-// Implements the Factory and Singleton design patterns
+@Component // If using @Value in a class, it must be a registered as a bean with the container
 public class ConnectionFactory {
 
     private static Logger logger = LogManager.getLogger(ConnectionFactory.class);
 
-    private static ConnectionFactory connFactory;
-    private Properties dbProps = new Properties();
+    @Value("${db-url}")
+    private String dbUrl;
+
+    @Value("${db-username}")
+    private String dbUsername;
+
+    @Value("${db-password}")
+    private String dbPassword;
 
     private ConnectionFactory() {
         try {
             Class.forName("org.postgresql.Driver");
-            dbProps.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties"));
-        } catch (IOException e) {
-            logger.fatal("There was a problem reading from the properties file at {}", LocalDateTime.now());
-            // TODO replace RuntimeException with a custom exception
-            throw new RuntimeException("Could not read from properties file.", e);
         } catch (ClassNotFoundException e) {
-            // TODO replace RuntimeException with a custom exception
-            throw new RuntimeException("Failed to load PostgreSQL JDBC driver.", e);
+            String message = "Failed to load PostgreSQL JDBC driver.";
+            logger.fatal(message);
+            throw new DataSourceException(message, e);
         }
-    }
-
-    public static ConnectionFactory getInstance() {
-        if (connFactory == null) {
-            connFactory = new ConnectionFactory();
-        }
-        return connFactory;
     }
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(dbProps.getProperty("db-url"), dbProps.getProperty("db-username"), dbProps.getProperty("db-password"));
+        return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
     }
 
 }

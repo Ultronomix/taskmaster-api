@@ -2,20 +2,28 @@ package com.revature.taskmaster.users;
 
 import com.revature.taskmaster.common.datasource.ConnectionFactory;
 import com.revature.taskmaster.common.exceptions.DataSourceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// DAO = Data Access Object
+@Repository
 public class UserDAO {
+
+    private static Logger logger = LogManager.getLogger(UserDAO.class);
+
+    private final ConnectionFactory connectionFactory;
+
+    @Autowired
+    public UserDAO(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
     private final String baseSelect = "SELECT au.id, au.given_name, au.surname, au.email, au.username, au.role_id, ur.role " +
                                       "FROM app_users au " +
@@ -26,7 +34,7 @@ public class UserDAO {
 
         List<User> allUsers = new ArrayList<>();
 
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+        try (Connection conn = connectionFactory.getConnection()) {
 
             // JDBC Statement objects are vulnerable to SQL injection
             Statement stmt = conn.createStatement();
@@ -35,8 +43,8 @@ public class UserDAO {
             allUsers = mapResultSet(rs);
 
         } catch (SQLException e) {
-            System.err.println("Something went wrong when communicating with the database");
-            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataSourceException(e);
         }
 
         return allUsers;
@@ -45,15 +53,19 @@ public class UserDAO {
 
     public Optional<User> findUserById(UUID id) {
 
+        logger.debug("UserDAO#findUserById invoked with argument: {}", id);
+
         String sql = baseSelect + "WHERE au.id = ?";
 
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+        try (Connection conn = connectionFactory.getConnection()) {
 
             // JDBC Statement objects are vulnerable to SQL injection
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setObject(1, id);
             ResultSet rs = pstmt.executeQuery();
-            return mapResultSet(rs).stream().findFirst();
+            Optional<User> _user = mapResultSet(rs).stream().findFirst();
+            logger.debug("UserDAO#findUserById returned value: {}", _user);
+            return _user;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,7 +78,7 @@ public class UserDAO {
 
         String sql = baseSelect + "WHERE au.username = ?";
 
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+        try (Connection conn = connectionFactory.getConnection()) {
 
             // JDBC Statement objects are vulnerable to SQL injection
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -75,7 +87,7 @@ public class UserDAO {
             return mapResultSet(rs).stream().findFirst();
 
         } catch (SQLException e) {
-            // TODO log this exception
+            logger.error(e.getMessage());
             throw new DataSourceException(e);
         }
 
@@ -89,7 +101,7 @@ public class UserDAO {
 
         String sql = baseSelect + "WHERE au.email = ?";
 
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+        try (Connection conn = connectionFactory.getConnection()) {
 
             // JDBC Statement objects are vulnerable to SQL injection
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -98,7 +110,7 @@ public class UserDAO {
             return mapResultSet(rs).stream().findFirst();
 
         } catch (SQLException e) {
-            // TODO log this exception
+            logger.error(e.getMessage());
             throw new DataSourceException(e);
         }
 
@@ -112,7 +124,7 @@ public class UserDAO {
 
         String sql = baseSelect + "WHERE au.username = ? AND au.password = ?";
 
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+        try (Connection conn = connectionFactory.getConnection()) {
 
             // JDBC Statement objects are vulnerable to SQL injection
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -122,7 +134,7 @@ public class UserDAO {
             return mapResultSet(rs).stream().findFirst();
 
         } catch (SQLException e) {
-            // TODO log this exception
+            logger.error(e.getMessage());
             throw new DataSourceException(e);
         }
 
@@ -133,7 +145,7 @@ public class UserDAO {
         String sql = "INSERT INTO app_users (given_name, surname, email, username, password, role_id) " +
                      "VALUES (?, ?, ?, ?, ?, '5a2e0415-ee08-440f-ab8a-778b37ff6874')";
 
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+        try (Connection conn = connectionFactory.getConnection()) {
 
             PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"id"});
             pstmt.setString(1, user.getGivenName());
@@ -149,10 +161,11 @@ public class UserDAO {
             user.setId(rs.getString("id"));
 
         } catch (SQLException e) {
-           log("ERROR", e.getMessage());
+           logger.error(e.getMessage());
+           throw new DataSourceException(e);
         }
 
-        log("INFO", "Successfully persisted new used with id: " + user.getId());
+        logger.info("Successfully persisted new used with id: {}", user.getId());
 
         return user.getId();
 
@@ -174,15 +187,4 @@ public class UserDAO {
         return users;
     }
 
-    public void log(String level, String message) {
-        try {
-            File logFile = new File("logs/app.log");
-            logFile.createNewFile();
-            BufferedWriter logWriter = new BufferedWriter(new FileWriter(logFile));
-            logWriter.write(String.format("[%s] at %s logged: [%s] %s\n", Thread.currentThread().getName(), LocalDate.now(), level.toUpperCase(), message));
-            logWriter.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

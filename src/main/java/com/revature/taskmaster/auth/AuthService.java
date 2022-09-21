@@ -4,11 +4,15 @@ import com.revature.taskmaster.common.exceptions.AuthenticationException;
 import com.revature.taskmaster.common.exceptions.InvalidRequestException;
 import com.revature.taskmaster.users.UserDAO;
 import com.revature.taskmaster.users.UserResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AuthService {
 
     private final UserDAO userDAO;
 
+    @Autowired
     public AuthService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
