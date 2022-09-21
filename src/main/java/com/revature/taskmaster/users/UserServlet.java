@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.taskmaster.common.ErrorResponse;
 import com.revature.taskmaster.common.ResourceCreationResponse;
 import com.revature.taskmaster.common.exceptions.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,12 +19,13 @@ import java.util.List;
 import static com.revature.taskmaster.common.SecurityUtils.isDirector;
 import static com.revature.taskmaster.common.SecurityUtils.requesterOwned;
 
+@Controller
 public class UserServlet extends HttpServlet {
 
     private final UserService userService;
     private final ObjectMapper jsonMapper;
 
-    // TODO inject a shared reference to a configured ObjectMapper
+    @Autowired
     public UserServlet(UserService userService, ObjectMapper jsonMapper) {
         this.userService = userService;
         this.jsonMapper = jsonMapper;
