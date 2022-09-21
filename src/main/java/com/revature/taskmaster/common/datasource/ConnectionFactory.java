@@ -4,17 +4,16 @@ import com.revature.taskmaster.common.exceptions.DataSourceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-// Implements the Factory and Singleton design patterns
+@Component // If using @Value in a class, it must be a registered as a bean with the container
 public class ConnectionFactory {
 
     private static Logger logger = LogManager.getLogger(ConnectionFactory.class);
-
-    private static ConnectionFactory connFactory;
 
     @Value("${db-url}")
     private String dbUrl;
@@ -33,13 +32,6 @@ public class ConnectionFactory {
             logger.fatal(message);
             throw new DataSourceException(message, e);
         }
-    }
-
-    public static ConnectionFactory getInstance() {
-        if (connFactory == null) {
-            connFactory = new ConnectionFactory();
-        }
-        return connFactory;
     }
 
     public Connection getConnection() throws SQLException {
