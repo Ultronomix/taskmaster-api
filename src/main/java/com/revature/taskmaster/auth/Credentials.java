@@ -1,6 +1,6 @@
 package com.revature.taskmaster.auth;
 
-// This is an example of a request DTO
+// This is an example of a request DTO (not required to be a Spring bean)
 public class Credentials {
 
     private String username;

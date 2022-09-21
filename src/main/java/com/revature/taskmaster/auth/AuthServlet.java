@@ -9,6 +9,8 @@ import com.revature.taskmaster.common.exceptions.InvalidRequestException;
 import com.revature.taskmaster.users.UserResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+@Controller
 public class AuthServlet extends HttpServlet {
 
     private static Logger logger = LogManager.getLogger(AuthServlet.class);
@@ -25,6 +28,7 @@ public class AuthServlet extends HttpServlet {
     private final AuthService authService;
     private final ObjectMapper jsonMapper;
 
+    @Autowired
     public AuthServlet(AuthService authService, ObjectMapper jsonMapper) {
         this.authService = authService;
         this.jsonMapper = jsonMapper;

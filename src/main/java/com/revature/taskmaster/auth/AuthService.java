@@ -4,7 +4,9 @@ import com.revature.taskmaster.common.exceptions.AuthenticationException;
 import com.revature.taskmaster.common.exceptions.InvalidRequestException;
 import com.revature.taskmaster.users.UserDAO;
 import com.revature.taskmaster.users.UserResponse;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AuthService {
 
     private final UserDAO userDAO;
