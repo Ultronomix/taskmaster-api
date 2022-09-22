@@ -1,13 +1,10 @@
 package com.revature.taskmaster;
 
-import com.revature.taskmaster.auth.AuthController;
 import com.revature.taskmaster.config.AppConfig;
-import com.revature.taskmaster.users.UserServlet;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -33,11 +30,7 @@ public class TaskmasterApp {
         AnnotationConfigWebApplicationContext beanContainer = new AnnotationConfigWebApplicationContext();
         beanContainer.register(AppConfig.class);
 
-        //UserServlet userServlet = beanContainer.getBean(UserServlet.class);
-
         // Web server context and servlet configurations
-
-        //webServer.addServlet("/v1", "UserServlet", userServlet).addMapping("/users");
         webServer.addServlet(rootContext, "DispatcherServlet", new DispatcherServlet(beanContainer)).addMapping("/");
 
         // Starting and awaiting web requests
