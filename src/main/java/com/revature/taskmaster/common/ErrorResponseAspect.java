@@ -1,10 +1,7 @@
 package com.revature.taskmaster.common;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.revature.taskmaster.common.exceptions.AuthenticationException;
-import com.revature.taskmaster.common.exceptions.AuthorizationException;
-import com.revature.taskmaster.common.exceptions.DataSourceException;
-import com.revature.taskmaster.common.exceptions.InvalidRequestException;
+import com.revature.taskmaster.common.exceptions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -41,10 +38,24 @@ public class ErrorResponseAspect {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
+        logger.info("No resource found using the provided search values, details: {}", e.getMessage());
+        return new ErrorResponse(404, e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleResourceNotFoundException(ResourcePersistenceException e) {
+        logger.info("Could not persist the provided resource payload, details: {}", e.getMessage());
+        return new ErrorResponse(409, e.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ErrorResponse handleDataSourceExceptions(DataSourceException e) {
         logger.error("A datasource exception was thrown at {}, details: {}", LocalDateTime.now(), e.getMessage());
-        return new ErrorResponse(500, e.getMessage());
+        return new ErrorResponse(502, e.getMessage());
     }
 
     @ExceptionHandler
