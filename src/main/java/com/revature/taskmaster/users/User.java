@@ -1,23 +1,42 @@
 package com.revature.taskmaster.users;
 
+import javax.persistence.*;
 import java.util.Objects;
+import java.util.UUID;
 
-// POJO = Plain Ol' Java Objects
+@Entity
+@Table(name = "app_users")
 public class User {
 
-    private String id;
+    @Id // indicates a primary key
+    @Column // all fields in an entity implicitly have @Column
+    private UUID id;
+
+    @Column(name = "given_name", nullable = false)
     private String givenName;
+
+    @Column(nullable = false) // column name defaults to field name if not provided
     private String surname;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    // JPA REQUIRES A NO-ARG CONSTRUCTOR FOR ALL ENTITIES
     public User() {
         super();
     }
 
-    public User(String id, String givenName, String surname, String email, String username, String password, Role role) {
+    public User(UUID id, String givenName, String surname, String email, String username, String password, Role role) {
         this.id = id;
         this.givenName = givenName;
         this.surname = surname;
@@ -27,11 +46,11 @@ public class User {
         this.role = role;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
