@@ -1,22 +1,36 @@
 package com.revature.taskmaster.users;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
+import java.util.UUID;
 
+@Entity
+@Table(name = "user_roles")
 public class Role {
 
-    private String id;
+    @Id
+    private UUID id;
+
+    @Column(name = "role", nullable = false, unique = true)
     private String name;
 
-    public Role(String id, String role) {
+    public Role() {
+        super();
+    }
+
+    public Role(UUID id, String role) {
         this.id = id;
         this.name = role;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

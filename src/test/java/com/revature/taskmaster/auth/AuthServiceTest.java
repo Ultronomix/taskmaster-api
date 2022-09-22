@@ -4,7 +4,7 @@ import com.revature.taskmaster.common.exceptions.AuthenticationException;
 import com.revature.taskmaster.common.exceptions.InvalidRequestException;
 import com.revature.taskmaster.users.Role;
 import com.revature.taskmaster.users.User;
-import com.revature.taskmaster.users.UserDAO;
+import com.revature.taskmaster.users.UserRepository;
 import com.revature.taskmaster.users.UserResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -20,17 +21,17 @@ import static org.mockito.Mockito.*;
 public class AuthServiceTest {
 
     AuthService sut; // SYSTEM UNDER TEST (the thing being tested)
-    UserDAO mockUserDAO;
+    UserRepository mockUserRepo;
 
     @BeforeEach
     public void setup() {
-        mockUserDAO = Mockito.mock(UserDAO.class);
-        sut = new AuthService(mockUserDAO);
+        mockUserRepo = Mockito.mock(UserRepository.class);
+        sut = new AuthService(mockUserRepo);
     }
 
     @AfterEach
     public void cleanUp() {
-        Mockito.reset(mockUserDAO); // helps to ensure that and when/then on this mock are reset/invalidated
+        Mockito.reset(mockUserRepo); // helps to ensure that and when/then on this mock are reset/invalidated
     }
 
     @Test
@@ -38,8 +39,8 @@ public class AuthServiceTest {
 
         // Arrange
         Credentials credentialsStub = new Credentials("valid", "credentials");
-        User userStub = new User("some-uuid", "Val", "Id", "valid123@revature.net", "valid", "credentials", new Role("some-role-id", "QA"));
-        when(mockUserDAO.findUserByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.of(userStub));
+        User userStub = new User(UUID.randomUUID(), "Val", "Id", "valid123@revature.net", "valid", "credentials", new Role(UUID.randomUUID(), "QA"));
+        when(mockUserRepo.findUserByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.of(userStub));
         UserResponse expectedResult = new UserResponse(userStub);
 
         // Act
@@ -48,7 +49,7 @@ public class AuthServiceTest {
         // Assert
         assertNotNull(actualResult);
         assertEquals(expectedResult, actualResult); // PLEASE NOTE: the objects you are comparing need to have a .equals method
-        verify(mockUserDAO, times(1)).findUserByUsernameAndPassword(anyString(), anyString());
+        verify(mockUserRepo, times(1)).findUserByUsernameAndPassword(anyString(), anyString());
 
     }
 
@@ -63,7 +64,7 @@ public class AuthServiceTest {
             sut.authenticate(credentialsStub);
         });
 
-        verify(mockUserDAO, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
+        verify(mockUserRepo, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
 
 
     }
@@ -79,7 +80,7 @@ public class AuthServiceTest {
             sut.authenticate(credentialsStub);
         });
 
-        verify(mockUserDAO, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
+        verify(mockUserRepo, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
 
 
     }
@@ -95,7 +96,7 @@ public class AuthServiceTest {
             sut.authenticate(credentialsStub);
         });
 
-        verify(mockUserDAO, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
+        verify(mockUserRepo, times(0)).findUserByUsernameAndPassword(anyString(), anyString());
 
 
     }
@@ -105,7 +106,7 @@ public class AuthServiceTest {
 
         // Arrange
         Credentials credentialsStub = new Credentials("unknown", "credentials");
-        when(mockUserDAO.findUserByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.empty());
+        when(mockUserRepo.findUserByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.empty());
 
         // Act
         assertThrows(AuthenticationException.class, () -> {
@@ -113,7 +114,7 @@ public class AuthServiceTest {
         });
 
         // Assert
-        verify(mockUserDAO, times(1)).findUserByUsernameAndPassword(anyString(), anyString());
+        verify(mockUserRepo, times(1)).findUserByUsernameAndPassword(anyString(), anyString());
 
     }
 

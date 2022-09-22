@@ -14,7 +14,7 @@ public class UserResponse implements Serializable {
     private String role;
 
     public UserResponse(User subject) {
-        this.id = subject.getId();
+        this.id = subject.getId().toString();
         this.givenName = subject.getGivenName();
         this.surname = subject.getSurname();
         this.email = subject.getEmail();

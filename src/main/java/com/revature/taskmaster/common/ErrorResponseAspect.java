@@ -61,6 +61,7 @@ public class ErrorResponseAspect {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleOtherExceptions(Exception e) {
+        e.printStackTrace();
         logger.error("A unhandled exception was thrown at {}, details: {}", LocalDateTime.now(), e.getMessage());
         return new ErrorResponse(500, "An unexpected exception occurred. Devs, please check logs.");
     }

@@ -18,7 +18,9 @@ public class SecurityUtils {
         }
     }
 
+    // TODO look into NPE that occurs when GET /users with no session
     public static void enforcePermissions(HttpSession userSession, String expectedRole) {
+        enforceAuthentication(userSession);
         if (!((UserResponse) userSession.getAttribute("authUser")).getRole().equals(expectedRole)) {
             throw new AuthorizationException();
         }
