@@ -5,4 +5,4 @@ target/
 *.jar
 
 logs/
-application.properties
+src/main/resources/application-deploy.yml
