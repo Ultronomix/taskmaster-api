@@ -1,0 +1,10 @@
+server:
+  port: 5000
+  servlet:
+    context-path: /taskmaster
+
+spring:
+  application:
+    name: taskmaster-api
+  profiles:
+    default: local
