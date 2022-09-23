@@ -9,7 +9,7 @@ phases:
       - aws s3 cp s3://taskmaster-resources/application.properties ./src/main/resources
   build:
     commands:
-      - mvn clean package
+      - mvn clean package -Dspring.profiles.active=test
   post_build:
     commands:
       - mv target/*-jar-with-dependencies.jar ./taskmaster.jar
