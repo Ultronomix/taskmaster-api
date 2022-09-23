@@ -12,7 +12,7 @@ phases:
       - mvn clean package -Dspring.profiles.active=test
   post_build:
     commands:
-      - mv target/*-jar-with-dependencies.jar ./taskmaster.jar
+      - mv target/*.jar ./taskmaster.jar
 
 artifacts:
   files:
