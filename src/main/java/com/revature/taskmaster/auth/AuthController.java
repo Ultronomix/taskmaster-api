@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/auth")
+//we need this annotation to get requests from our angular front ends
+@CrossOrigin(origins="http://localhost:4200", allowCredentials="true")
 public class AuthController {
 
     private static Logger logger = LogManager.getLogger(AuthController.class);
@@ -40,6 +42,24 @@ public class AuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest req) {
         req.getSession().invalidate();
+    }
+
+
+    //whole new mapping for the ngPokes demos---------------------------------
+    @PostMapping(value="/pokeLogin", produces = "application/json", consumes = "application/json")
+    public Credentials loginToPokedex(@RequestBody Credentials credentials){
+
+        System.out.println(credentials.getUsername());
+        System.out.println(credentials.getPassword());
+
+        //SUPER dinky hardcoded login
+        //like, very dinky
+        if(credentials.getUsername().equals("user") && credentials.getPassword().equals("password")){
+            return credentials;
+        }
+
+        return null; //if the if statement fails...
+
     }
 
 }
